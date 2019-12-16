@@ -3,6 +3,7 @@ package org.rabix.engine.test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.rabix.bindings.model.ApplicationPort;
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.bindings.model.dag.DAGLinkPort;
 
 /**
@@ -15,8 +16,9 @@ public class TestPort extends ApplicationPort {
                   @JsonProperty("type") Object schema,
                   @JsonProperty("scatter") Boolean scatter,
                   @JsonProperty("linkMerge") String linkMerge,
+                  @JsonProperty("pickValue") String pickValue,
                   @JsonProperty("description") String description) {
-    super(id, defaultValue, schema, scatter, linkMerge, description);
+    super(id, defaultValue, schema, scatter, linkMerge, pickValue, description);
   }
 
   @Override
@@ -25,19 +27,21 @@ public class TestPort extends ApplicationPort {
   }
 
   public static TestPort simplePort(String id) {
-    return new TestPort(id, null, "type", false, null, null);
+    return new TestPort(id, null, "type", false, null, null, null);
   }
 
   public DAGLinkPort toInputPort(String appId) {
     String fullId = appId + "." + id;
     LinkMerge lm = linkMerge != null? LinkMerge.valueOf(linkMerge) : null;
-    return new DAGLinkPort(fullId, fullId, DAGLinkPort.LinkPortType.INPUT, lm, scatter, defaultValue, null);
+    PickValue pv = pickValue != null? PickValue.valueOf(pickValue) : null;
+    return new DAGLinkPort(fullId, fullId, DAGLinkPort.LinkPortType.INPUT, lm, pv, scatter, defaultValue, null);
   }
 
   public DAGLinkPort toOutputPort(String appId) {
     String fullId = appId + "." + id;
     LinkMerge lm = linkMerge != null? LinkMerge.valueOf(linkMerge) : null;
-    return new DAGLinkPort(fullId, fullId, DAGLinkPort.LinkPortType.OUTPUT, lm, scatter, defaultValue, null);
+    PickValue pv = pickValue != null? PickValue.valueOf(pickValue) : null;
+    return new DAGLinkPort(fullId, fullId, DAGLinkPort.LinkPortType.OUTPUT, lm, pv, scatter, defaultValue, null);
   }
 
   @Override

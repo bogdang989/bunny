@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.bindings.model.dag.DAGLinkPort.LinkPortType;
 
 public class VariableRecord extends TimestampedModel {
@@ -17,6 +18,7 @@ public class VariableRecord extends TimestampedModel {
   private LinkPortType type;
   private Object value;
   private LinkMerge linkMerge;
+  private PickValue pickValue;
 
   private boolean isWrapped; // is value wrapped into array?
   private int numberOfGlobals; // number of 'global' outputs if node is scattered
@@ -26,11 +28,11 @@ public class VariableRecord extends TimestampedModel {
   private boolean isDefault = true;
   private Object transform;
 
-  public VariableRecord(UUID rootId, String jobId, String portId, LinkPortType type, Object value, LinkMerge linkMerge) {
-    this(rootId, jobId, portId, type, value, linkMerge, LocalDateTime.now(), LocalDateTime.now());
+  public VariableRecord(UUID rootId, String jobId, String portId, LinkPortType type, Object value, LinkMerge linkMerge, PickValue pickValue) {
+    this(rootId, jobId, portId, type, value, linkMerge, pickValue, LocalDateTime.now(), LocalDateTime.now());
   }
 
-  public VariableRecord(UUID rootId, String jobId, String portId, LinkPortType type, Object value, LinkMerge linkMerge, LocalDateTime createdAt,
+  public VariableRecord(UUID rootId, String jobId, String portId, LinkPortType type, Object value, LinkMerge linkMerge, PickValue pickValue, LocalDateTime createdAt,
       LocalDateTime modifiedAt) {
     super(createdAt, modifiedAt);
     this.jobId = jobId;
@@ -39,6 +41,7 @@ public class VariableRecord extends TimestampedModel {
     this.value = value;
     this.rootId = rootId;
     this.linkMerge = linkMerge;
+    this.pickValue = pickValue;
   }
 
   public UUID getRootId() {
@@ -107,6 +110,14 @@ public class VariableRecord extends TimestampedModel {
 
   public void setLinkMerge(LinkMerge linkMerge) {
     this.linkMerge = linkMerge;
+  }
+
+  public PickValue getPickValue() {
+    return pickValue;
+  }
+
+  public void setPickValue(PickValue pickValue) {
+    this.pickValue = pickValue;
   }
 
   public boolean isDefault() {

@@ -31,6 +31,7 @@ public class CWLBindingHelper extends CWLBeanHelper {
   public static final String KEY_VALUE_FROM = "valueFrom";
   public static final String KEY_OUTPUT_EVAL = "outputEval";
   public static final String KEY_LINK_MERGE = "linkMerge";
+  public static final String KEY_PICK_VALUE = "pickValue";
 
   public static String getGlob(Object binding) {
     return getValue(KEY_GLOB, binding);
@@ -106,6 +107,10 @@ public class CWLBindingHelper extends CWLBeanHelper {
   
   public static String getLinkMerge(Map<String, Object> binding) {
     return getValue(KEY_LINK_MERGE, binding);
+  }
+
+  public static String getPickValue(Map<String, Object> binding) {
+    return getValue(KEY_PICK_VALUE, binding);
   }
   
   /**

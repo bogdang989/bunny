@@ -93,16 +93,16 @@ public class CWLTranslator implements ProtocolTranslator {
         else {
           defaultValue = CWLValueTranslator.translateToCommon(value);
         }
-        linkPort = new DAGLinkPort(CWLSchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, port.getScatter() != null ? port.getScatter() : false, defaultValue, transform);
+        linkPort = new DAGLinkPort(CWLSchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, null, port.getScatter() != null ? port.getScatter() : false, defaultValue, transform);
       }
       else {
-        linkPort = new DAGLinkPort(CWLSchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, port.getScatter() != null ? port.getScatter() : false, null, null);
+        linkPort = new DAGLinkPort(CWLSchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, null, port.getScatter() != null ? port.getScatter() : false, null, null);
       }
       inputPorts.add(linkPort);
     }
     List<DAGLinkPort> outputPorts = new ArrayList<>();
     for (ApplicationPort port : job.getApp().getOutputs()) {
-      DAGLinkPort linkPort = new DAGLinkPort(CWLSchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.OUTPUT, LinkMerge.merge_nested, false, null, null);
+      DAGLinkPort linkPort = new DAGLinkPort(CWLSchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.OUTPUT, LinkMerge.merge_nested, null, false, null, null);
       outputPorts.add(linkPort);
     }
     
@@ -144,11 +144,11 @@ public class CWLTranslator implements ProtocolTranslator {
       }
       boolean isSourceFromWorkflow = !dataLink.getSource().contains(InternalSchemaHelper.SLASH_SEPARATOR);
 
-      DAGLinkPort sourceLinkPort = new DAGLinkPort(sourcePortId, sourceNodeId, isSourceFromWorkflow ? LinkPortType.INPUT : LinkPortType.OUTPUT, LinkMerge.merge_nested, false, null, null);
-      DAGLinkPort destinationLinkPort = new DAGLinkPort(destinationPortId, destinationNodeId, dataLink.isOutputSource()? LinkPortType.OUTPUT : LinkPortType.INPUT, dataLink.getLinkMerge(), dataLink.getScattered() != null ? dataLink.getScattered() : false, null, null);
+      DAGLinkPort sourceLinkPort = new DAGLinkPort(sourcePortId, sourceNodeId, isSourceFromWorkflow ? LinkPortType.INPUT : LinkPortType.OUTPUT, LinkMerge.merge_nested, null,false, null, null);
+      DAGLinkPort destinationLinkPort = new DAGLinkPort(destinationPortId, destinationNodeId, dataLink.isOutputSource()? LinkPortType.OUTPUT : LinkPortType.INPUT, dataLink.getLinkMerge(), dataLink.getPickValue(), dataLink.getScattered() != null ? dataLink.getScattered() : false, null, null);
 
       int position = dataLink.getPosition() != null ? dataLink.getPosition() : 1;
-      links.add(new DAGLink(sourceLinkPort, destinationLinkPort, dataLink.getLinkMerge(), position));
+      links.add(new DAGLink(sourceLinkPort, destinationLinkPort, dataLink.getLinkMerge(), dataLink.getPickValue(), position));
     }
     Map<String, Object> commonDefaults = (Map<String, Object>) CWLValueTranslator.translateToCommon(extractDefaults(job.getInputs()));
     return new DAGContainer(job.getId(), inputPorts, outputPorts, job.getApp(), scatterMethod, links, children, commonDefaults, ProtocolType.CWL);
@@ -175,6 +175,7 @@ public class CWLTranslator implements ProtocolTranslator {
       
       for (DAGLink dagLink : dagContainer.getLinks()) {
         dagLink.getDestination().setLinkMerge(dagLink.getLinkMerge());
+        dagLink.getDestination().setPickValue(dagLink.getPickValue());
         processPorts(dagLink, dagNode);
         
         for (DAGNode childNode : dagContainer.getChildren()) {
@@ -191,11 +192,13 @@ public class CWLTranslator implements ProtocolTranslator {
     for (DAGLinkPort dagLinkPort : dagNode.getInputPorts()) {
       if (dagLinkPort.equals(dagLink.getDestination())) {
         dagLinkPort.setLinkMerge(dagLink.getLinkMerge());
+        dagLinkPort.setPickValue(dagLink.getPickValue());
       }
     }
     for (DAGLinkPort dagLinkPort : dagNode.getOutputPorts()) {
       if (dagLinkPort.equals(dagLink.getDestination())) {
         dagLinkPort.setLinkMerge(dagLink.getLinkMerge());
+        dagLinkPort.setPickValue(dagLink.getPickValue());
       }
     }
   }

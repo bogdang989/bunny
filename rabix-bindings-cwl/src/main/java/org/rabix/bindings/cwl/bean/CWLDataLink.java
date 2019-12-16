@@ -1,6 +1,7 @@
 package org.rabix.bindings.cwl.bean;
 
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.common.json.BeanPropertyView;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -26,13 +27,18 @@ public class CWLDataLink {
   
   @JsonProperty("linkMerge")
   private LinkMerge linkMerge;
+
+  @JsonProperty("pickValue")
+  private PickValue pickValue;
   
   @JsonProperty("outputSource")
   @JsonView(BeanPropertyView.Full.class)
   private boolean isOutputSource;
 
   @JsonCreator
-  public CWLDataLink(@JsonProperty("source") String source, @JsonProperty("destination") String destination, @JsonProperty("linkMerge") LinkMerge linkMerge,
+  public CWLDataLink(@JsonProperty("source") String source, @JsonProperty("destination") String destination,
+                     @JsonProperty("linkMerge") LinkMerge linkMerge,
+                     @JsonProperty("pickValue") PickValue pickValue,
       @JsonProperty("position") Integer position, @JsonProperty("outputSource") boolean isOutputSource) {
     this.source = source;
     this.destination = destination;
@@ -40,6 +46,7 @@ public class CWLDataLink {
     this.destination = destination;
     this.position = position;
     this.linkMerge = linkMerge;
+    this.pickValue = pickValue;
     this.isOutputSource = isOutputSource;
   }
 
@@ -61,6 +68,14 @@ public class CWLDataLink {
   
   public void setLinkMerge(LinkMerge linkMerge) {
     this.linkMerge = linkMerge;
+  }
+
+  public PickValue getPickValue() {
+    return pickValue;
+  }
+
+  public void setPickValue(PickValue pickValue) {
+    this.pickValue = pickValue;
   }
 
   public String getDestination() {
@@ -122,7 +137,7 @@ public class CWLDataLink {
 
   @Override
   public String toString() {
-    return "CWLDataLink [source=" + source + ", destination=" + destination + ", position=" + position + ", scattered=" + scattered + ", linkMerge=" + linkMerge + "]";
+    return "CWLDataLink [source=" + source + ", destination=" + destination + ", position=" + position + ", scattered=" + scattered + ", linkMerge=" + linkMerge + ", pickValue=" + pickValue + "]";
   }
 
 }

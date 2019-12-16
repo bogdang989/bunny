@@ -3,6 +3,7 @@ package org.rabix.engine.store.postgres.jdbi.impl;
 import org.postgresql.util.PGobject;
 import org.rabix.bindings.model.FileValue;
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.bindings.model.dag.DAGLinkPort.LinkPortType;
 import org.rabix.common.helper.JSONHelper;
 import org.rabix.engine.store.model.VariableRecord;
@@ -84,6 +85,7 @@ public abstract class JDBIVariableRecordRepository extends VariableRecordReposit
             q.bind("port_id", variableRecord.getPortId());
             q.bind("type", variableRecord.getType());
             q.bind("link_merge", variableRecord.getLinkMerge());
+            q.bind("pick_value", variableRecord.getPickValue());
             q.bind("is_wrapped", variableRecord.isWrapped());
             q.bind("globals_count", variableRecord.getNumberOfGlobals());
             q.bind("times_updated_count", variableRecord.getNumberOfTimesUpdated());
@@ -105,6 +107,7 @@ public abstract class JDBIVariableRecordRepository extends VariableRecordReposit
       String portId = resultSet.getString("port_id");
       String type = resultSet.getString("type");
       String linkMerge = resultSet.getString("link_merge");
+      String pickValue = resultSet.getString("pick_value");
       Boolean isWrapped = resultSet.getBoolean("is_wrapped");
       Integer globalsCount = resultSet.getInt("globals_count");
       Integer timesUpdatedCount = resultSet.getInt("times_updated_count");
@@ -118,7 +121,7 @@ public abstract class JDBIVariableRecordRepository extends VariableRecordReposit
       LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
       LocalDateTime modifiedAt = resultSet.getTimestamp("modified_at").toLocalDateTime();
 
-      VariableRecord variableRecord = new VariableRecord(rootId, jobId, portId, LinkPortType.valueOf(type), valueObject, LinkMerge.valueOf(linkMerge), createdAt, modifiedAt);
+      VariableRecord variableRecord = new VariableRecord(rootId, jobId, portId, LinkPortType.valueOf(type), valueObject, LinkMerge.valueOf(linkMerge), PickValue.valueOf(pickValue), createdAt, modifiedAt);
       variableRecord.setWrapped(isWrapped);
       variableRecord.setNumberGlobals(globalsCount);
       variableRecord.setNumberOfTimesUpdated(timesUpdatedCount);

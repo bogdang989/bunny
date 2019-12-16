@@ -1,6 +1,7 @@
 package org.rabix.bindings.model.dag;
 
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,17 +17,26 @@ public class DAGLink {
   private final Integer position;
   @JsonProperty("linkMerge")
   private final LinkMerge linkMerge;
+  @JsonProperty("pickValue")
+  private final PickValue pickValue;
 
   @JsonCreator
-  public DAGLink(@JsonProperty("source") DAGLinkPort source, @JsonProperty("destination") DAGLinkPort destination, @JsonProperty("linkMerge") LinkMerge linkMerge, @JsonProperty("position") Integer position) {
+  public DAGLink(@JsonProperty("source") DAGLinkPort source, @JsonProperty("destination") DAGLinkPort destination,
+                 @JsonProperty("linkMerge") LinkMerge linkMerge,
+                 @JsonProperty("pickValue") PickValue pickValue,
+                 @JsonProperty("position") Integer position) {
     this.source = source;
     this.position = position;
     this.linkMerge = linkMerge;
+    this.pickValue = pickValue;
     this.destination = destination;
   }
 
   public LinkMerge getLinkMerge() {
     return linkMerge;
+  }
+  public PickValue getPickValue() {
+    return pickValue;
   }
   
   public Integer getPosition() {
