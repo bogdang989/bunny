@@ -1,6 +1,7 @@
 package org.rabix.bindings.sb.bean;
 
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,15 +26,19 @@ public class SBDataLink {
   @JsonProperty("linkMerge")
   private LinkMerge linkMerge;
 
+  @JsonProperty("pickValue")
+  private PickValue pickValue;
+
   @JsonCreator
   public SBDataLink(@JsonProperty("source") String source, @JsonProperty("destination") String destination, @JsonProperty("linkMerge") LinkMerge linkMerge,
-      @JsonProperty("position") Integer position) {
+                    @JsonProperty("pickValue") PickValue pickValue, @JsonProperty("position") Integer position) {
     this.source = source;
     this.destination = destination;
     this.source = source;
     this.destination = destination;
     this.position = position;
     this.linkMerge = linkMerge;
+    this.pickValue = pickValue;
   }
 
   public String getSource() {
@@ -50,6 +55,14 @@ public class SBDataLink {
   
   public void setLinkMerge(LinkMerge linkMerge) {
     this.linkMerge = linkMerge;
+  }
+
+  public PickValue getPickValue() {
+    return pickValue;
+  }
+
+  public void setPickValue(PickValue pickValue) {
+    this.pickValue = pickValue;
   }
 
   public String getDestination() {

@@ -15,10 +15,7 @@ import org.rabix.bindings.draft3.bean.Draft3Workflow;
 import org.rabix.bindings.draft3.helper.Draft3JobHelper;
 import org.rabix.bindings.draft3.helper.Draft3SchemaHelper;
 import org.rabix.bindings.helper.DAGValidationHelper;
-import org.rabix.bindings.model.ApplicationPort;
-import org.rabix.bindings.model.Job;
-import org.rabix.bindings.model.LinkMerge;
-import org.rabix.bindings.model.ScatterMethod;
+import org.rabix.bindings.model.*;
 import org.rabix.bindings.model.dag.DAGContainer;
 import org.rabix.bindings.model.dag.DAGLink;
 import org.rabix.bindings.model.dag.DAGLinkPort;
@@ -90,16 +87,16 @@ public class Draft3Translator implements ProtocolTranslator {
         else {
           defaultValue = Draft3ValueTranslator.translateToCommon(value);
         }
-        linkPort = new DAGLinkPort(Draft3SchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, port.getScatter() != null ? port.getScatter() : false, defaultValue, transform);
+        linkPort = new DAGLinkPort(Draft3SchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, PickValue.only_non_null, port.getScatter() != null ? port.getScatter() : false, defaultValue, transform);
       }
       else {
-        linkPort = new DAGLinkPort(Draft3SchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, port.getScatter() != null ? port.getScatter() : false, null, null);
+        linkPort = new DAGLinkPort(Draft3SchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.INPUT, LinkMerge.merge_nested, PickValue.only_non_null, port.getScatter() != null ? port.getScatter() : false, null, null);
       }
       inputPorts.add(linkPort);
     }
     List<DAGLinkPort> outputPorts = new ArrayList<>();
     for (ApplicationPort port : job.getApp().getOutputs()) {
-      DAGLinkPort linkPort = new DAGLinkPort(Draft3SchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.OUTPUT, LinkMerge.merge_nested, false, null, null);
+      DAGLinkPort linkPort = new DAGLinkPort(Draft3SchemaHelper.normalizeId(port.getId()), job.getId(), LinkPortType.OUTPUT, LinkMerge.merge_nested, PickValue.only_non_null, false, null, null);
       outputPorts.add(linkPort);
     }
     
@@ -142,11 +139,11 @@ public class Draft3Translator implements ProtocolTranslator {
       }
       boolean isSourceFromWorkflow = !dataLink.getSource().contains(InternalSchemaHelper.SLASH_SEPARATOR);
 
-      DAGLinkPort sourceLinkPort = new DAGLinkPort(sourcePortId, sourceNodeId, isSourceFromWorkflow ? LinkPortType.INPUT : LinkPortType.OUTPUT, LinkMerge.merge_nested, false, null, null);
-      DAGLinkPort destinationLinkPort = new DAGLinkPort(destinationPortId, destinationNodeId, dataLink.isOutputSource()? LinkPortType.OUTPUT : LinkPortType.INPUT, dataLink.getLinkMerge(), dataLink.getScattered() != null ? dataLink.getScattered() : false, null, null);
+      DAGLinkPort sourceLinkPort = new DAGLinkPort(sourcePortId, sourceNodeId, isSourceFromWorkflow ? LinkPortType.INPUT : LinkPortType.OUTPUT, LinkMerge.merge_nested, PickValue.only_non_null, false, null, null);
+      DAGLinkPort destinationLinkPort = new DAGLinkPort(destinationPortId, destinationNodeId, dataLink.isOutputSource()? LinkPortType.OUTPUT : LinkPortType.INPUT, dataLink.getLinkMerge(), dataLink.getPickValue(), dataLink.getScattered() != null ? dataLink.getScattered() : false, null, null);
 
       int position = dataLink.getPosition() != null ? dataLink.getPosition() : 1;
-      links.add(new DAGLink(sourceLinkPort, destinationLinkPort, dataLink.getLinkMerge(), position));
+      links.add(new DAGLink(sourceLinkPort, destinationLinkPort, dataLink.getLinkMerge(), dataLink.getPickValue(), position));
     }
     @SuppressWarnings("unchecked")
     Map<String, Object> commonDefaults = (Map<String, Object>) Draft3ValueTranslator.translateToCommon(job.getInputs());

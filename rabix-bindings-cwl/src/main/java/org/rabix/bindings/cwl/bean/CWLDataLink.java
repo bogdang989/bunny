@@ -1,6 +1,7 @@
 package org.rabix.bindings.cwl.bean;
 
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.common.json.BeanPropertyView;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -26,6 +27,9 @@ public class CWLDataLink {
   
   @JsonProperty("linkMerge")
   private LinkMerge linkMerge;
+
+  @JsonProperty("pickValue")
+  private PickValue pickValue;
   
   @JsonProperty("outputSource")
   @JsonView(BeanPropertyView.Full.class)
@@ -33,13 +37,14 @@ public class CWLDataLink {
 
   @JsonCreator
   public CWLDataLink(@JsonProperty("source") String source, @JsonProperty("destination") String destination, @JsonProperty("linkMerge") LinkMerge linkMerge,
-      @JsonProperty("position") Integer position, @JsonProperty("outputSource") boolean isOutputSource) {
+                     @JsonProperty("pickValue") PickValue pickValue, @JsonProperty("position") Integer position, @JsonProperty("outputSource") boolean isOutputSource) {
     this.source = source;
     this.destination = destination;
     this.source = source;
     this.destination = destination;
     this.position = position;
     this.linkMerge = linkMerge;
+    this.pickValue = pickValue;
     this.isOutputSource = isOutputSource;
   }
 
@@ -63,6 +68,14 @@ public class CWLDataLink {
     this.linkMerge = linkMerge;
   }
 
+  public PickValue getPickValue() {
+    return pickValue;
+  }
+
+  public void setPickValue(PickValue pickValue) {
+    this.pickValue = pickValue;
+  }
+  
   public String getDestination() {
     return destination;
   }

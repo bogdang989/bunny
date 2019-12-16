@@ -1,6 +1,7 @@
 package org.rabix.bindings.model.dag;
 
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,12 +27,14 @@ public class DAGLinkPort {
   private Object transform;
   
   private LinkMerge linkMerge;
+  private PickValue pickValue;
     
   @JsonCreator
   public DAGLinkPort(@JsonProperty("id") String id,
                      @JsonProperty("dagNodeId") String dagNodeId,
                      @JsonProperty("type") LinkPortType type,
                      @JsonProperty("linkMerge") LinkMerge linkMerge,
+                     @JsonProperty("pickValue") PickValue pickValue,
                      @JsonProperty("scatter") boolean scatter,
                      @JsonProperty("default") Object defaultValue,
                      @JsonProperty("transform") Object transform) {
@@ -39,6 +42,7 @@ public class DAGLinkPort {
     this.type = type;
     this.scatter = scatter;
     this.linkMerge = linkMerge;
+    this.pickValue = pickValue;
     this.dagNodeId = dagNodeId;
     this.defaultValue = defaultValue;
     this.transform = transform;
@@ -66,6 +70,14 @@ public class DAGLinkPort {
   
   public void setLinkMerge(LinkMerge linkMerge) {
     this.linkMerge = linkMerge;
+  }
+
+  public PickValue getPickValue() {
+    return pickValue;
+  }
+
+  public void setPickValue(PickValue pickValue) {
+    this.pickValue = pickValue;
   }
   
   public LinkPortType getType() {
@@ -121,7 +133,7 @@ public class DAGLinkPort {
 
   @Override
   public String toString() {
-    return "DAGLinkPort [id=" + id + ", dagNodeId=" + dagNodeId + ", type=" + type + ", scatter=" + scatter + ", default=" + defaultValue + ", transform=" + transform + ", linkMerge=" + linkMerge + "]";
+    return "DAGLinkPort [id=" + id + ", dagNodeId=" + dagNodeId + ", type=" + type + ", scatter=" + scatter + ", default=" + defaultValue + ", transform=" + transform + ", linkMerge=" + linkMerge + ", pickValue=" + pickValue + "]";
   }
   
 }

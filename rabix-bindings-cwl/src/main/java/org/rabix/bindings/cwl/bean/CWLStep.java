@@ -58,7 +58,7 @@ public class CWLStep {
   @JsonCreator
   public CWLStep(@JsonProperty("id") String id, @JsonProperty("run") CWLJobApp app,
       @JsonProperty("scatter") Object scatter, @JsonProperty("scatterMethod") String scatterMethod, @JsonProperty("linkMerge") String linkMerge,
-      @JsonProperty("in") List<Map<String, Object>> inputs, @JsonProperty("out") List<Map<String, Object>> outputs) {
+      @JsonProperty("pickValue") String pickValue, @JsonProperty("in") List<Map<String, Object>> inputs, @JsonProperty("out") List<Map<String, Object>> outputs) {
     this.id = id;
     this.app = app;
     this.scatter = scatter;

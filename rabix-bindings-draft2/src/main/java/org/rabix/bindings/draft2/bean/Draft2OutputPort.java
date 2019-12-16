@@ -23,8 +23,9 @@ public class Draft2OutputPort extends ApplicationPort {
   public Draft2OutputPort(@JsonProperty("id") String id, @JsonProperty("default") Object defaultValue,
       @JsonProperty("type") Object schema, @JsonProperty("outputBinding") Object outputBinding,
       @JsonProperty("scatter") Boolean scatter, @JsonProperty("source") Object source, @JsonProperty("linkMerge") String linkMerge,
+                          @JsonProperty("pickValue") String pickValue,
                           @JsonProperty("description") String description) {
-    super(id, defaultValue, schema, scatter, linkMerge, description);
+    super(id, defaultValue, schema, scatter, linkMerge, pickValue, description);
     this.outputBinding = outputBinding;
     this.source = source;
   }

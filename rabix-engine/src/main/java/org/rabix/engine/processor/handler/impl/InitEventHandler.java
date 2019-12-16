@@ -76,7 +76,7 @@ public class InitEventHandler implements EventHandler<InitEvent> {
         jobRecordService.incrementPortCounter(job, inputPort, LinkPortType.INPUT);
       }
       Object defaultValue = node.getDefaults().get(inputPort.getId());
-      VariableRecord variable = new VariableRecord(event.getContextId(), node.getId(), inputPort.getId(), LinkPortType.INPUT, defaultValue, node.getLinkMerge(inputPort.getId(), inputPort.getType()));
+      VariableRecord variable = new VariableRecord(event.getContextId(), node.getId(), inputPort.getId(), LinkPortType.INPUT, defaultValue, node.getLinkMerge(inputPort.getId(), inputPort.getType()), node.getPickValue(inputPort.getId(), inputPort.getType()));
       variableRecordService.create(variable);
     }
 
@@ -84,7 +84,7 @@ public class InitEventHandler implements EventHandler<InitEvent> {
       if(!node.getType().equals(DAGNodeType.CONTAINER))
         jobRecordService.incrementPortCounter(job, outputPort, LinkPortType.OUTPUT);
 
-      VariableRecord variable = new VariableRecord(event.getContextId(), node.getId(), outputPort.getId(), LinkPortType.OUTPUT, null, node.getLinkMerge(outputPort.getId(), outputPort.getType()));
+      VariableRecord variable = new VariableRecord(event.getContextId(), node.getId(), outputPort.getId(), LinkPortType.OUTPUT, null, node.getLinkMerge(outputPort.getId(), outputPort.getType()), node.getPickValue(outputPort.getId(), outputPort.getType()));
       variableRecordService.create(variable);
     }
 

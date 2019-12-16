@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.rabix.bindings.model.ApplicationPort;
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.bindings.sb.bean.SBDataLink;
 import org.rabix.bindings.sb.bean.SBJob;
 import org.rabix.bindings.sb.bean.SBJobApp;
@@ -113,7 +114,8 @@ public class SBJobProcessor implements BeanProcessor<SBJob> {
       for (int position = 0; position < sources.size(); position++) {
         String destination = port.getId();
         LinkMerge linkMerge = port.getLinkMerge() != null? LinkMerge.valueOf(port.getLinkMerge()) : LinkMerge.merge_nested;
-        SBDataLink dataLink = new SBDataLink(sources.get(position), destination, linkMerge, position + 1);
+        PickValue pickValue = port.getPickValue() != null? PickValue.valueOf(port.getPickValue()) : PickValue.only_non_null;
+        SBDataLink dataLink = new SBDataLink(sources.get(position), destination, linkMerge, pickValue, position + 1);
         workflow.addDataLink(dataLink);
       }
     }
@@ -124,7 +126,8 @@ public class SBJobProcessor implements BeanProcessor<SBJob> {
         for (int position = 0; position < sources.size(); position++) {
           String destination = SBBindingHelper.getId(input);
           LinkMerge linkMerge = SBBindingHelper.getLinkMerge(input) != null ? LinkMerge.valueOf(SBBindingHelper.getLinkMerge(input)) : LinkMerge.merge_nested;
-          SBDataLink dataLink = new SBDataLink(sources.get(position), destination, linkMerge, position + 1);
+          PickValue pickValue = SBBindingHelper.getPickValue(input) != null ? PickValue.valueOf(SBBindingHelper.getPickValue(input)) : PickValue.only_non_null;
+          SBDataLink dataLink = new SBDataLink(sources.get(position), destination, linkMerge, pickValue, position + 1);
           dataLinks.add(dataLink);
         }
       }

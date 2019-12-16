@@ -20,6 +20,7 @@ import org.rabix.bindings.draft2.helper.Draft2BindingHelper;
 import org.rabix.bindings.draft2.helper.Draft2SchemaHelper;
 import org.rabix.bindings.model.ApplicationPort;
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.common.helper.InternalSchemaHelper;
 import org.rabix.common.json.processor.BeanProcessor;
 import org.rabix.common.json.processor.BeanProcessorException;
@@ -87,7 +88,9 @@ public class Draft2JobProcessor implements BeanProcessor<Draft2Job> {
       for (int position = 0; position < sources.size(); position++) {
         String destination = port.getId();
         LinkMerge linkMerge = port.getLinkMerge() != null? LinkMerge.valueOf(port.getLinkMerge()) : LinkMerge.merge_nested;
-        Draft2DataLink dataLink = new Draft2DataLink(sources.get(position), destination, linkMerge, position + 1);
+        PickValue pickValue = port.getPickValue() != null? PickValue.valueOf(port.getPickValue()) : PickValue.only_non_null;
+
+        Draft2DataLink dataLink = new Draft2DataLink(sources.get(position), destination, linkMerge, pickValue, position + 1);
         workflow.addDataLink(dataLink);
       }
     }
@@ -98,7 +101,8 @@ public class Draft2JobProcessor implements BeanProcessor<Draft2Job> {
         for (int position = 0; position < sources.size(); position++) {
           String destination = Draft2BindingHelper.getId(input);
           LinkMerge linkMerge = Draft2BindingHelper.getLinkMerge(input) != null ? LinkMerge.valueOf(Draft2BindingHelper.getLinkMerge(input)) : LinkMerge.merge_nested;
-          Draft2DataLink dataLink = new Draft2DataLink(sources.get(position), destination, linkMerge, position + 1);
+          PickValue pickValue = Draft2BindingHelper.getPickValue(input) != null ? PickValue.valueOf(Draft2BindingHelper.getPickValue(input)) : PickValue.only_non_null;
+          Draft2DataLink dataLink = new Draft2DataLink(sources.get(position), destination, linkMerge, pickValue,position + 1);
           dataLinks.add(dataLink);
         }
       }

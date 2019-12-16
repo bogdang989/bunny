@@ -38,14 +38,14 @@ public class Draft2EmbeddedApp extends Draft2JobApp {
         @Override
         public Draft2InputPort apply(ApplicationPort port) {
           return new Draft2InputPort(port.getId(), port.getDefaultValue(), port.getSchema(), null, port.getScatter(),
-              null, port.getLinkMerge(), port.getDescription());
+              null, port.getLinkMerge(), port.getPickValue(), port.getDescription());
         }
       });
       outputs = Lists.transform(application.getOutputs(), new Function<ApplicationPort, Draft2OutputPort>() {
         @Override
         public Draft2OutputPort apply(ApplicationPort port) {
           return new Draft2OutputPort(port.getId(), port.getDefaultValue(), port.getSchema(), null, port.getScatter(),
-              null, port.getLinkMerge(), port.getDescription());
+              null, port.getLinkMerge(), port.getPickValue(), port.getDescription());
         }
       });
     } catch (BindingException e1) {

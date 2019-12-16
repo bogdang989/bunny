@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.rabix.bindings.model.PickValue;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Draft3DataLink {
@@ -24,13 +25,16 @@ public class Draft3DataLink {
   
   @JsonProperty("linkMerge")
   private LinkMerge linkMerge;
-  
+
+  @JsonProperty("pickValue")
+  private PickValue pickValue;
+
   @JsonProperty("outputSource")
   private boolean isOutputSource;
 
   @JsonCreator
   public Draft3DataLink(@JsonProperty("source") String source, @JsonProperty("destination") String destination,
-      @JsonProperty("linkMerge") LinkMerge linkMerge, @JsonProperty("position") Integer position,
+      @JsonProperty("linkMerge") LinkMerge linkMerge, @JsonProperty("pickValue") PickValue pickValue, @JsonProperty("position") Integer position,
       @JsonProperty("outputSource") Boolean isOutputSource) {
     this.source = source;
     this.destination = destination;
@@ -39,6 +43,7 @@ public class Draft3DataLink {
     this.position = position;
     this.isOutputSource = isOutputSource;
     this.linkMerge = linkMerge;
+    this.pickValue = pickValue;
   }
 
   public boolean isOutputSource() {
@@ -59,6 +64,14 @@ public class Draft3DataLink {
   
   public void setLinkMerge(LinkMerge linkMerge) {
     this.linkMerge = linkMerge;
+  }
+
+  public PickValue getPickValue() {
+    return pickValue;
+  }
+
+  public void setPickValue(PickValue pickValue) {
+    this.pickValue = pickValue;
   }
 
   public String getDestination() {

@@ -3,6 +3,7 @@ package org.rabix.engine.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.rabix.bindings.model.PickValue;
 import org.rabix.bindings.model.dag.DAGLinkPort;
 import org.rabix.bindings.model.dag.DAGLinkPort.LinkPortType;
 import org.rabix.engine.store.model.VariableRecord;
@@ -24,5 +25,7 @@ public interface VariableRecordService {
   void addValue(VariableRecord variableRecord, Object value, Integer position, boolean wrap);
   
   Object linkMerge(VariableRecord variableRecord);
+
+  Object pickValue(VariableRecord variableRecord);
 
 }

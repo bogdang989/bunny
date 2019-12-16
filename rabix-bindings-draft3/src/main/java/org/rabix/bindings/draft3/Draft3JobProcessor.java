@@ -18,6 +18,7 @@ import org.rabix.bindings.draft3.helper.Draft3BindingHelper;
 import org.rabix.bindings.draft3.helper.Draft3SchemaHelper;
 import org.rabix.bindings.model.ApplicationPort;
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.common.helper.InternalSchemaHelper;
 import org.rabix.common.json.processor.BeanProcessor;
 import org.rabix.common.json.processor.BeanProcessorException;
@@ -130,11 +131,12 @@ public class Draft3JobProcessor implements BeanProcessor<Draft3Job> {
       for (int position = 0; position < sources.size(); position++) {
         String destination = port.getId();
         LinkMerge linkMerge = port.getLinkMerge() != null ? LinkMerge.valueOf(port.getLinkMerge()) : LinkMerge.merge_nested;
+        PickValue pickValue = port.getPickValue() != null ? PickValue.valueOf(port.getPickValue()) : PickValue.only_non_null;
 
         String source = sources.get(position);
         source = Draft2ToDraft3Converter.convertSource(source);
         source = Draft3SchemaHelper.normalizeId(source);
-        Draft3DataLink dataLink = new Draft3DataLink(source, destination, linkMerge, position + 1, true);
+        Draft3DataLink dataLink = new Draft3DataLink(source, destination, linkMerge, pickValue,position + 1, true);
         workflow.addDataLink(dataLink);
       }
     }
@@ -151,12 +153,14 @@ public class Draft3JobProcessor implements BeanProcessor<Draft3Job> {
           destination = step.getId() + SLASH_SEPARATOR + destination;
           LinkMerge linkMerge = Draft3BindingHelper.getLinkMerge(input) != null ? LinkMerge.valueOf(Draft3BindingHelper.getLinkMerge(input))
               : LinkMerge.merge_nested;
+          PickValue pickValue = Draft3BindingHelper.getPickValue(input) != null ? PickValue.valueOf(Draft3BindingHelper.getPickValue(input))
+                  : PickValue.only_non_null;
 
           String source = sources.get(position);
           source = Draft2ToDraft3Converter.convertSource(source);
 
           source = Draft3SchemaHelper.normalizeId(source);
-          Draft3DataLink dataLink = new Draft3DataLink(source, destination, linkMerge, position + 1, false);
+          Draft3DataLink dataLink = new Draft3DataLink(source, destination, linkMerge, pickValue, position + 1, false);
           dataLinks.add(dataLink);
         }
       }

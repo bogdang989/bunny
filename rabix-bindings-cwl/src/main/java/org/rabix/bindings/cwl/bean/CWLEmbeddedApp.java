@@ -40,13 +40,13 @@ public class CWLEmbeddedApp extends CWLJobApp {
         @Override
         public CWLInputPort apply(ApplicationPort port) {
           return new CWLInputPort(port.getId(), port.getDefaultValue(), port.getSchema(), null, null, null,
-              port.getScatter(), null, port.getLinkMerge(), port.getDescription(), null);
+              port.getScatter(), null, port.getLinkMerge(), port.getPickValue(), port.getDescription(), null);
         }
       });
       outputs = Lists.transform(application.getOutputs(), new Function<ApplicationPort, CWLOutputPort>() {
         @Override
         public CWLOutputPort apply(ApplicationPort port) {
-          return new CWLOutputPort(port.getId(), null, port.getDefaultValue(), port.getSchema(), null, port.getScatter(), null, port.getLinkMerge(), null, port.getDescription());
+          return new CWLOutputPort(port.getId(), null, port.getDefaultValue(), port.getSchema(), null, port.getScatter(), null, port.getLinkMerge(), port.getPickValue(), null, port.getDescription());
         }
       });
     } catch (BindingException e) {

@@ -11,6 +11,7 @@ import org.rabix.bindings.model.Application;
 import org.rabix.bindings.model.Application.ApplicationDeserializer;
 import org.rabix.bindings.model.Application.ApplicationSerializer;
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.bindings.model.ScatterMethod;
 import org.rabix.bindings.model.dag.DAGLinkPort.LinkPortType;
 
@@ -115,46 +116,87 @@ public class DAGNode {
 
   public LinkMerge getLinkMerge(String portId, LinkPortType linkPortType) {
     switch (linkPortType) {
-    case INPUT:
-      for (DAGLinkPort inputPort : inputPorts) {
-        if (inputPort.getId().equals(portId)) {
-          return inputPort.getLinkMerge();
+      case INPUT:
+        for (DAGLinkPort inputPort : inputPorts) {
+          if (inputPort.getId().equals(portId)) {
+            return inputPort.getLinkMerge();
+          }
         }
-      }
-      break;
-    case OUTPUT:
-      for (DAGLinkPort inputPort : outputPorts) {
-        if (inputPort.getId().equals(portId)) {
-          return inputPort.getLinkMerge();
+        break;
+      case OUTPUT:
+        for (DAGLinkPort inputPort : outputPorts) {
+          if (inputPort.getId().equals(portId)) {
+            return inputPort.getLinkMerge();
+          }
         }
-      }
-      break;
-    default:
-      break;
+        break;
+      default:
+        break;
     }
     return null;
   }
-  
+
   public Set<LinkMerge> getLinkMergeSet(LinkPortType linkPortType) {
     Set<LinkMerge> linkMergeSet = new HashSet<>();
-    
+
     switch (linkPortType) {
-    case INPUT:
-      for (DAGLinkPort inputPort : inputPorts) {
-        linkMergeSet.add(inputPort.getLinkMerge());
-      }
-      break;
-    case OUTPUT:
-      for (DAGLinkPort outputPort : outputPorts) {
-        linkMergeSet.add(outputPort.getLinkMerge());
-      }
-      break;
-    default:
-      break;
+      case INPUT:
+        for (DAGLinkPort inputPort : inputPorts) {
+          linkMergeSet.add(inputPort.getLinkMerge());
+        }
+        break;
+      case OUTPUT:
+        for (DAGLinkPort outputPort : outputPorts) {
+          linkMergeSet.add(outputPort.getLinkMerge());
+        }
+        break;
+      default:
+        break;
     }
     return linkMergeSet;
   }
-  
+
+  public PickValue getPickValue(String portId, LinkPortType linkPortType) {
+    switch (linkPortType) {
+      case INPUT:
+        for (DAGLinkPort inputPort : inputPorts) {
+          if (inputPort.getId().equals(portId)) {
+            return inputPort.getPickValue();
+          }
+        }
+        break;
+      case OUTPUT:
+        for (DAGLinkPort inputPort : outputPorts) {
+          if (inputPort.getId().equals(portId)) {
+            return inputPort.getPickValue();
+          }
+        }
+        break;
+      default:
+        break;
+    }
+    return null;
+  }
+
+  public Set<PickValue> getPickValueSet(LinkPortType linkPortType) {
+    Set<PickValue> pickValueSet = new HashSet<>();
+
+    switch (linkPortType) {
+      case INPUT:
+        for (DAGLinkPort inputPort : inputPorts) {
+          pickValueSet.add(inputPort.getPickValue());
+        }
+        break;
+      case OUTPUT:
+        for (DAGLinkPort outputPort : outputPorts) {
+          pickValueSet.add(outputPort.getPickValue());
+        }
+        break;
+      default:
+        break;
+    }
+    return pickValueSet;
+  }
   public Map<String, Object> getDefaults() {
     return defaults;
   }

@@ -25,6 +25,7 @@ import org.rabix.bindings.cwl.helper.CWLFileValueHelper;
 import org.rabix.bindings.cwl.helper.CWLSchemaHelper;
 import org.rabix.bindings.model.ApplicationPort;
 import org.rabix.bindings.model.LinkMerge;
+import org.rabix.bindings.model.PickValue;
 import org.rabix.common.helper.InternalSchemaHelper;
 import org.rabix.common.json.processor.BeanProcessor;
 import org.rabix.common.json.processor.BeanProcessorException;
@@ -139,11 +140,12 @@ public class CWLJobProcessor implements BeanProcessor<CWLJob> {
       for (int position = 0; position < sources.size(); position++) {
         String destination = port.getId();
         LinkMerge linkMerge = port.getLinkMerge() != null? LinkMerge.valueOf(port.getLinkMerge()) : LinkMerge.merge_nested;
+        PickValue pickValue = port.getPickValue() != null? PickValue.valueOf(port.getPickValue()) : PickValue.only_non_null;
         
         String source = sources.get(position);
         source = Draft2ToCWLConverter.convertSource(source);
         source = CWLSchemaHelper.normalizeId(source);
-        CWLDataLink dataLink = new CWLDataLink(source, destination, linkMerge, position + 1, true);
+        CWLDataLink dataLink = new CWLDataLink(source, destination, linkMerge, pickValue, position + 1, true);
         workflow.addDataLink(dataLink);
       }
     }
@@ -159,12 +161,14 @@ public class CWLJobProcessor implements BeanProcessor<CWLJob> {
           destination = Draft2ToCWLConverter.convertDestinationId(destination);
           destination = step.getId() + SLASH_SEPARATOR + destination;
           LinkMerge linkMerge = CWLBindingHelper.getLinkMerge(input) != null ? LinkMerge.valueOf(CWLBindingHelper.getLinkMerge(input)) : LinkMerge.merge_nested;
-          
+          PickValue pickValue = CWLBindingHelper.getPickValue(input) != null ? PickValue.valueOf(CWLBindingHelper.getPickValue(input)) : PickValue.only_non_null;
+
+
           String source = sources.get(position);
           source = Draft2ToCWLConverter.convertSource(source);
           
           source = CWLSchemaHelper.normalizeId(source);
-          CWLDataLink dataLink = new CWLDataLink(source, destination, linkMerge, position + 1, false);
+          CWLDataLink dataLink = new CWLDataLink(source, destination, linkMerge, pickValue, + 1, false);
           dataLinks.add(dataLink);
         }
       }

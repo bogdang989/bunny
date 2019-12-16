@@ -45,7 +45,7 @@ public class CWLOutputPortsDeserializer extends JsonDeserializer<List<CWLOutputP
           outputPort = BeanSerializer.deserialize(subnodeEntry.getValue().toString(), CWLOutputPort.class);
           outputPort.setId(subnodeEntry.getKey());
         } else {
-          outputPort = new CWLOutputPort(subnodeEntry.getKey(), null, null, JSONHelper.transform(subnodeEntry.getValue(), false), null, null, null, null, null, null);
+          outputPort = new CWLOutputPort(subnodeEntry.getKey(), null, null, JSONHelper.transform(subnodeEntry.getValue(), false), null, null, null, null, null, null, null);
         }
         outputPort = handleRedirection(outputPort, CWLCommandLineTool.STDOUT_KEY);
         outputPort = handleRedirection(outputPort, CWLCommandLineTool.STDERR_KEY);
@@ -65,7 +65,7 @@ public class CWLOutputPortsDeserializer extends JsonDeserializer<List<CWLOutputP
       } else if (CWLCommandLineTool.STDERR_KEY.equals(redirection)) {
         outputBinding.put(CWLBindingHelper.KEY_GLOB, CWLCommandLineTool.generateRandomStderrGlob());
       }
-      return new CWLOutputPort(outputPort.getId(), null, null, CWLSchemaHelper.TYPE_JOB_FILE, outputBinding, null, null, null, null, null);
+      return new CWLOutputPort(outputPort.getId(), null, null, CWLSchemaHelper.TYPE_JOB_FILE, outputBinding, null, null, null, null, null, null);
     }
     return outputPort;
   }

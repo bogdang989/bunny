@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.rabix.bindings.model.PickValue;
 import org.rabix.bindings.model.dag.DAGLinkPort.LinkPortType;
 import org.rabix.engine.store.cache.Cachable;
 import org.rabix.engine.store.cache.Cache;
@@ -139,6 +140,17 @@ public class VariableRecordServiceImpl implements VariableRecordService {
     }
   }
 
+  public Object pickValue(VariableRecord variableRecord) {
+    switch (variableRecord.getPickValue()) {
+      case first_non_null:
+        return firstNonNull(variableRecord.getValue());
+      case only_non_null:
+        return onlyNonNull(variableRecord.getValue());
+      default:
+        return variableRecord.getValue();
+    }
+  }
+
   private <T> void expand(List<T> list, Integer position) {
     int initialSize = list.size();
     if (initialSize >= position) {
@@ -173,12 +185,52 @@ public class VariableRecordServiceImpl implements VariableRecordService {
     }
     return flattenedValues;
   }
-  
+
+  @SuppressWarnings("unchecked")
+  private Object firstNonNull(Object value) {
+    if (value == null) {
+      return null;
+    }
+    if (!(value instanceof List<?>)) {
+      return value;
+    }
+    if (value instanceof List<?>) {
+      for (Object subValue : ((List<?>) value)) {
+        if (subValue != null) {
+          return subValue;
+        }
+      }
+    }
+    return null; // What happens if input is [null, null] and first_non_null is selected
+  }
+
+  @SuppressWarnings("unchecked")
+  private Object onlyNonNull(Object value) {
+    if (value == null) {
+      return null;
+    }
+    if (!(value instanceof List<?>)) {
+      return value;
+    }
+    List<Object> nonNullValues = new ArrayList<>();
+    if (value instanceof List<?>) {
+      for (Object subValue : ((List<?>) value)) {
+        if (subValue != null) {
+          nonNullValues.add(subValue);
+        }
+      }
+    }
+    return nonNullValues; // What happens if input is [null, null] and only_non_null is selected
+  }
+
   public Object getValue(VariableRecord variableRecord) {
-    if (variableRecord.getLinkMerge() == null) {
+    if (variableRecord.getLinkMerge() != null) {
+      variableRecord.setValue(linkMerge(variableRecord));
+    }
+    if (variableRecord.getPickValue() == null) {
       return variableRecord.getValue();
     }
-    return linkMerge(variableRecord);
+    return pickValue(variableRecord);
   }
   
 }

@@ -39,14 +39,14 @@ public class SBEmbeddedApp extends SBJobApp {
         @Override
         public SBInputPort apply(ApplicationPort port) {
           return new SBInputPort(port.getId(), port.getDefaultValue(), port.getSchema(), null, port.getScatter(),
-              null, port.getLinkMerge(), port.getDescription());
+              null, port.getLinkMerge(), port.getPickValue(), port.getDescription());
         }
       });
       outputs = Lists.transform(application.getOutputs(), new Function<ApplicationPort, SBOutputPort>() {
         @Override
         public SBOutputPort apply(ApplicationPort port) {
           return new SBOutputPort(port.getId(), port.getDefaultValue(), port.getSchema(), null, port.getScatter(),
-              null, port.getLinkMerge(), port.getDescription());
+              null, port.getLinkMerge(), port.getPickValue(), port.getDescription());
         }
       });
     } catch (BindingException e1) {
