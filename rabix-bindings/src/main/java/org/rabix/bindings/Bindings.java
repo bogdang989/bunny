@@ -165,6 +165,8 @@ public interface Bindings {
    * @throws BindingException
    */
   Object transformInputs(Object value, Job job, Object transform) throws BindingException;
+
+  boolean shouldSkip(Object when, Job job) throws BindingException;
   
   /**
    * Returns files that are created by the protocol (CWL creates job.json, cwl.output.json)

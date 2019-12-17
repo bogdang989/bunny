@@ -49,6 +49,8 @@ public class DAGNode {
   protected String appHash;
   @JsonProperty("scatterMethod")
   protected ScatterMethod scatterMethod;
+  @JsonProperty("when")
+  protected Object when;
   @JsonProperty("inputPorts")
   protected List<DAGLinkPort> inputPorts = new ArrayList<>();
   @JsonProperty("outputPorts")
@@ -65,6 +67,7 @@ public class DAGNode {
                  @JsonProperty("inputPorts") List<DAGLinkPort> inputPorts,
                  @JsonProperty("outputPorts") List<DAGLinkPort> outputPorts,
                  @JsonProperty("scatterMethod") ScatterMethod scatterMethod,
+                 @JsonProperty("when") Object when,
                  @JsonProperty("app") Application app,
                  @JsonProperty("defaults") Map<String, Object> defaults,
                  @JsonProperty("protocolType") ProtocolType protocolType) {
@@ -73,6 +76,7 @@ public class DAGNode {
     this.inputPorts = inputPorts;
     this.outputPorts = outputPorts;
     this.scatterMethod = scatterMethod;
+    this.when = when;
     this.defaults = defaults;
     this.appHash = null;
     this.protocolType = protocolType;
@@ -109,7 +113,11 @@ public class DAGNode {
   public ScatterMethod getScatterMethod() {
     return scatterMethod;
   }
-  
+
+  public Object getWhen() {
+    return when;
+  }
+
   public ProtocolType getProtocolType() {
     return protocolType;
   }

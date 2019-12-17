@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.rabix.bindings.cwl.bean.resource.CWLResource;
+import org.rabix.bindings.cwl.expression.CWLExpressionResolver;
 import org.rabix.bindings.cwl.helper.CWLBindingHelper;
 import org.rabix.bindings.cwl.helper.CWLSchemaHelper;
 import org.rabix.bindings.cwl.json.CWLResourcesDeserializer;
@@ -43,6 +44,9 @@ public class CWLStep {
   @JsonInclude(Include.NON_NULL)
   @JsonProperty("scatterMethod")
   private String scatterMethod;
+
+  @JsonProperty("when")
+  private Object when;
   
   @JsonProperty("hints")
   @JsonDeserialize(using = CWLResourcesDeserializer.class)
@@ -57,12 +61,14 @@ public class CWLStep {
 
   @JsonCreator
   public CWLStep(@JsonProperty("id") String id, @JsonProperty("run") CWLJobApp app,
-      @JsonProperty("scatter") Object scatter, @JsonProperty("scatterMethod") String scatterMethod, @JsonProperty("linkMerge") String linkMerge,
+      @JsonProperty("scatter") Object scatter, @JsonProperty("scatterMethod") String scatterMethod,
+                 @JsonProperty("when") String when,
       @JsonProperty("in") List<Map<String, Object>> inputs, @JsonProperty("out") List<Map<String, Object>> outputs) {
     this.id = id;
     this.app = app;
     this.scatter = scatter;
     this.scatterMethod = scatterMethod;
+    this.when = when;
     this.inputs = inputs;
     this.outputs = outputs;
     this.job = constructJob();
@@ -86,7 +92,7 @@ public class CWLStep {
     }
     Map<String, Object> inputMap = constructJobPorts(inputs);
     Map<String, Object> outputMap = constructJobPorts(outputs);
-    return new CWLJob(app, inputMap, outputMap, scatter, scatterMethod, id);
+    return new CWLJob(app, inputMap, outputMap, scatter, scatterMethod, when, id);
   }
 
   /**
@@ -133,6 +139,10 @@ public class CWLStep {
   
   public String getScatterMethod() {
     return scatterMethod;
+  }
+
+  public Object getWhen() {
+    return when;
   }
   
   public List<CWLResource> getHints() {
@@ -214,7 +224,7 @@ public class CWLStep {
   @Override
   public String toString() {
     return "CWLStep [id=" + id + ", app=" + app + ", inputs=" + inputs + ", outputs=" + outputs + ", scatter="
-        + scatter + ", scatterMethod=" + scatterMethod + ", job=" + job + "]";
+        + scatter + ", scatterMethod=" + scatterMethod + ", when=" + when +", job=" + job + "]";
   }
 
 }

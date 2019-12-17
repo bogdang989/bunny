@@ -175,6 +175,11 @@ public class CWLBindings implements Bindings {
     return processor.transformInputs(value, job, transform);
   }
 
+  @Override
+  public boolean shouldSkip(Object when, Job job) throws BindingException {
+    return processor.shouldSkip(when, job);
+  }
+
   @Override public DataType getDataTypeFromSchema(Object schema) {
     return CWLSchemaHelper.readDataType(schema);
   }

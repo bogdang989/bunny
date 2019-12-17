@@ -53,7 +53,7 @@ public class InitEventHandler implements EventHandler<InitEvent> {
     contextRecordService.create(context);
 
     DAGNode node = dagNodeService.get(InternalSchemaHelper.ROOT_NAME, event.getContextId(), event.getDagHash());
-    JobRecord job = new JobRecord(event.getContextId(), node.getId(), event.getContextId(), null, JobRecord.JobState.PENDING, node instanceof DAGContainer, false, true, false, event.getDagHash());
+    JobRecord job = new JobRecord(event.getContextId(), node.getId(), event.getContextId(), null, JobRecord.JobState.PENDING, node instanceof DAGContainer, false, false, true, false, event.getDagHash());
 
     jobRecordService.create(job);
     if (job.isRoot() && mode != EventHandlingMode.REPLAY) {

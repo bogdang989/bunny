@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.rabix.common.helper.InternalSchemaHelper.normalizeId;
+
 public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
 
   private final Logger logger = LoggerFactory.getLogger(JobStatusEventHandler.class);
@@ -276,6 +278,25 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
 
     UUID rootId = event.getContextId();
 
+    job.setShouldSkip(resolveShouldFail(job, dagNodeService.get(normalizeId(job.getId()),
+            rootId,
+            job.getDagHash())));
+
+    if (job.shouldSkip()) {
+      job.setState(JobRecord.JobState.COMPLETED);
+      List<VariableRecord> outputVariableRecords = variableRecordService.find(job.getId(), LinkPortType.OUTPUT, job.getRootId());
+      Map<String, Object> outputs = new HashMap<>();
+      for (VariableRecord outputVariableRecord : outputVariableRecords) {
+        eventProcessor.addToQueue(new OutputUpdateEvent(job.getRootId(), job.getId(), outputVariableRecord.getPortId(), null, 1, 1, event.getEventGroupId(), event.getProducedByNode()));
+        outputs.put(outputVariableRecord.getPortId(), null);
+      }
+      job.setContainer(false);
+      job.setScatterWrapper(false);
+      eventProcessor.addToQueue(new JobStatusEvent(job.getId(), job.getRootId(), JobRecord.JobState.COMPLETED,
+              outputs, event.getEventGroupId(), event.getProducedByNode()));
+    }
+
+
     if (!job.isScattered() && job.getScatterPorts().size() > 0) {
       job.setState(JobRecord.JobState.RUNNING);
 
@@ -287,7 +308,7 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
         }
       }
     } else if (job.isContainer()) {
-      DAGNode node = dagNodeService.get(InternalSchemaHelper.normalizeId(job.getId()), rootId, job.getDagHash());
+      DAGNode node = dagNodeService.get(normalizeId(job.getId()), rootId, job.getDagHash());
 
       job.setState(JobRecord.JobState.RUNNING);
 
@@ -377,6 +398,31 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
     }
   }
 
+  private boolean resolveShouldFail(JobRecord job, DAGNode node) throws EventHandlerException {
+    try {
+      Application app = appService.get(node.getAppHash());
+
+      Bindings bindings = null;
+      if (node.getProtocolType() != null) {
+        bindings = BindingsFactory.create(node.getProtocolType());
+      } else {
+        String encodedApp = URIHelper.createDataURI(JSONHelper.writeObject(appService.get(node.getAppHash())));
+        bindings = BindingsFactory.create(encodedApp);
+      }
+
+      List<VariableRecord> inputVariables = variableRecordService.find(job.getId(), LinkPortType.INPUT, job.getRootId());
+      Map<String, Object> preprocesedInputs = new HashMap<>();
+      for (VariableRecord inputVariable : inputVariables) {
+        Object value = variableRecordService.getValue(inputVariable);
+        preprocesedInputs.put(inputVariable.getPortId(), value);
+      }
+      return bindings.shouldSkip(node.getWhen(), new Job(JSONHelper.writeObject(app), preprocesedInputs));
+
+    } catch (BindingException e) {
+      throw new EventHandlerException("Failed to set evaluate transform", e);
+    }
+  }
+
   private Set<String> findImmediateReadyNodes(DAGNode node) {
     if (node instanceof DAGContainer) {
       Set<String> nodesWithoutDestination = new HashSet<>();
@@ -416,7 +462,7 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
       }
     }
     for (DAGLink link : containerNode.getLinks()) {
-      String originalJobID = InternalSchemaHelper.normalizeId(job.getId());
+      String originalJobID = normalizeId(job.getId());
 
       String sourceNodeId = originalJobID;
       String linkSourceNodeId = link.getSource().getDagNodeId();

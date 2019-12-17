@@ -107,9 +107,10 @@ public class CWLTranslator implements ProtocolTranslator {
     }
     
     ScatterMethod scatterMethod = job.getScatterMethod() != null? ScatterMethod.valueOf(job.getScatterMethod()) : ScatterMethod.dotproduct;
+    Object when = job.getWhen() != null ? job.getWhen() : true;
     if (!job.getApp().isWorkflow()) {
       Map<String, Object> commonDefaults = (Map<String, Object>) CWLValueTranslator.translateToCommon(extractDefaults(job.getInputs()));
-      return new DAGNode(job.getId(), inputPorts, outputPorts, scatterMethod, job.getApp(), commonDefaults, ProtocolType.CWL);
+      return new DAGNode(job.getId(), inputPorts, outputPorts, scatterMethod, when, job.getApp(), commonDefaults, ProtocolType.CWL);
     }
 
     CWLWorkflow workflow = (CWLWorkflow) job.getApp();
@@ -151,7 +152,7 @@ public class CWLTranslator implements ProtocolTranslator {
       links.add(new DAGLink(sourceLinkPort, destinationLinkPort, dataLink.getLinkMerge(), dataLink.getPickValue(), position));
     }
     Map<String, Object> commonDefaults = (Map<String, Object>) CWLValueTranslator.translateToCommon(extractDefaults(job.getInputs()));
-    return new DAGContainer(job.getId(), inputPorts, outputPorts, job.getApp(), scatterMethod, links, children, commonDefaults, ProtocolType.CWL);
+    return new DAGContainer(job.getId(), inputPorts, outputPorts, job.getApp(), scatterMethod, when, links, children, commonDefaults, ProtocolType.CWL);
   }
   
   private Map<String, Object> extractDefaults(Map<String, Object> inputs) {

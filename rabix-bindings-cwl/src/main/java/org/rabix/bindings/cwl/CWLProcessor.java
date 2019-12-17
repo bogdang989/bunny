@@ -526,4 +526,24 @@ public class CWLProcessor implements ProtocolProcessor {
       throw new BindingException(e);
     }
   }
+
+  @Override
+  public boolean shouldSkip(Object when, Job job) throws BindingException {
+    CWLJob cwlJob = CWLJobHelper.getCWLJob(job);
+    if (when == null) {
+      return false;
+    }
+    try {
+      boolean result = CWLExpressionResolver.resolve(when, cwlJob, null);
+      if (result == false) {
+        return true;
+      }
+      if (result == true) {
+        return false;
+      }
+    } catch (CWLExpressionException e) {
+      throw new BindingException(e);
+    }
+    return false;
+  }
 }

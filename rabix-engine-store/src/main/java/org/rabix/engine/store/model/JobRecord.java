@@ -50,6 +50,7 @@ public class JobRecord extends TimestampedModel {
   private Boolean isScattered = false;                  // it's created from scatter
   private Boolean isContainer = false;                  // it's a container Job
   private Boolean isScatterWrapper = false;             // it's a scatter wrapper
+  private Boolean shouldSkip = false;                   // when condition returned false
 
   private int numberOfGlobalInputs = 0;
   private int numberOfGlobalOutputs = 0;
@@ -62,11 +63,11 @@ public class JobRecord extends TimestampedModel {
     super(LocalDateTime.now(), LocalDateTime.now());
   }
 
-  public JobRecord(UUID rootId, String id, UUID uniqueId, UUID parentId, JobState state, Boolean isContainer, Boolean isScattered, Boolean master, Boolean blocking, String dagCache) {
-    this(rootId, id, uniqueId, parentId, state, isContainer, isScattered, master, blocking, dagCache, LocalDateTime.now(), LocalDateTime.now());
+  public JobRecord(UUID rootId, String id, UUID uniqueId, UUID parentId, JobState state, Boolean isContainer, Boolean isScattered, Boolean shouldSkip, Boolean master, Boolean blocking, String dagCache) {
+    this(rootId, id, uniqueId, parentId, state, isContainer, isScattered, shouldSkip, master, blocking, dagCache, LocalDateTime.now(), LocalDateTime.now());
   }
 
-  public JobRecord(UUID rootId, String id, UUID uniqueId, UUID parentId, JobState state, Boolean isContainer, Boolean isScattered, Boolean master, Boolean blocking, String dagCache, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+  public JobRecord(UUID rootId, String id, UUID uniqueId, UUID parentId, JobState state, Boolean isContainer, Boolean isScattered, Boolean shouldSkip, Boolean master, Boolean blocking, String dagCache, LocalDateTime createdAt, LocalDateTime modifiedAt) {
     super(createdAt, modifiedAt);
     this.id = id;
     this.externalId = uniqueId;
@@ -77,6 +78,7 @@ public class JobRecord extends TimestampedModel {
     this.blocking = blocking;
     this.isContainer = isContainer;
     this.isScattered = isScattered;
+    this.shouldSkip = shouldSkip;
     this.dagHash = dagCache;
     this.inputCounters = new ArrayList<>();
     this.outputCounters = new ArrayList<>();
@@ -140,6 +142,14 @@ public class JobRecord extends TimestampedModel {
 
   public void setScatterWrapper(Boolean isScatterWrapper) {
     this.isScatterWrapper = isScatterWrapper;
+  }
+
+  public Boolean shouldSkip() {
+    return shouldSkip;
+  }
+
+  public void setShouldSkip(Boolean shouldSkip) {
+    this.shouldSkip = shouldSkip;
   }
 
   public int getNumberOfGlobalInputs() {
@@ -413,7 +423,7 @@ public class JobRecord extends TimestampedModel {
 
   @Override
   public String toString() {
-    return "JobRecord [id=" + id + ", externalId=" + externalId + ", rootId=" + rootId + ", master=" + master + ", state=" + state + ", inputCounters=" + inputCounters + ", outputCounters=" + outputCounters + ", isScattered=" + isScattered + ", isContainer=" + isContainer + ", isScatterWrapper=" + isScatterWrapper + ", numberOfGlobalInputs=" + numberOfGlobalInputs + ", numberOfGlobalOutputs=" + numberOfGlobalOutputs + ", scatterStrategy=" + scatterStrategy + ", dagCache=" + dagHash + ", createdAt=" + getCreatedAt() + ", modifiedAt="+ getModifiedAt() +"]";
+    return "JobRecord [id=" + id + ", externalId=" + externalId + ", rootId=" + rootId + ", master=" + master + ", state=" + state + ", inputCounters=" + inputCounters + ", outputCounters=" + outputCounters + ", isScattered=" + isScattered + ", isContainer=" + isContainer + ", isScatterWrapper=" + isScatterWrapper + ", shouldSkip=" + shouldSkip +", numberOfGlobalInputs=" + numberOfGlobalInputs + ", numberOfGlobalOutputs=" + numberOfGlobalOutputs + ", scatterStrategy=" + scatterStrategy + ", dagCache=" + dagHash + ", createdAt=" + getCreatedAt() + ", modifiedAt="+ getModifiedAt() +"]";
   }
 
 }

@@ -26,4 +26,5 @@ public interface ProtocolProcessor {
   boolean isSuccessful(Job job, int statusCode) throws BindingException;
 
 
+  boolean shouldSkip(Object when, Job job) throws BindingException;
 }

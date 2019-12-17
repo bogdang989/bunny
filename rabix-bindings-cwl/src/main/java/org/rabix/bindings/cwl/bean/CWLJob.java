@@ -2,7 +2,10 @@ package org.rabix.bindings.cwl.bean;
 
 import java.util.Map;
 
+import com.google.inject.internal.cglib.core.$ObjectSwitchCallback;
 import org.rabix.bindings.cwl.CWLJobProcessor;
+import org.rabix.bindings.cwl.expression.CWLExpressionException;
+import org.rabix.bindings.cwl.expression.CWLExpressionResolver;
 import org.rabix.bindings.cwl.helper.CWLSchemaHelper;
 import org.rabix.common.json.BeanPropertyView;
 import org.rabix.common.json.processor.BeanProcessorClass;
@@ -38,6 +41,9 @@ public final class CWLJob {
   @JsonProperty("scatterMethod")
   @JsonView(BeanPropertyView.Full.class)
   private String scatterMethod;
+
+  @JsonProperty("when")
+  private Object when;
   
   @JsonProperty("runtime")
   private CWLRuntime runtime;
@@ -48,7 +54,7 @@ public final class CWLJob {
       @JsonProperty("outputs") Map<String, Object> outputs,
       @JsonProperty("runtime") CWLRuntime runtime,
       @JsonProperty("id") String id, @JsonProperty("scatter") Object scatter, 
-      @JsonProperty("scatterMethod") String scatterMethod) {
+      @JsonProperty("scatterMethod") String scatterMethod, @JsonProperty("when") Object when) {
     this.id = id;
     this.app = app;
     this.inputs = inputs;
@@ -56,6 +62,7 @@ public final class CWLJob {
     this.runtime = runtime;
     this.scatter = scatter;
     this.scatterMethod = scatterMethod;
+    this.when = when;
     processPortDefaults();
   }
   
@@ -71,13 +78,14 @@ public final class CWLJob {
     }
   }
 
-  public CWLJob(CWLJobApp app, Map<String, Object> inputs, Map<String, Object> outputs, Object scatter, String scatterMethod, String id) {
+  public CWLJob(CWLJobApp app, Map<String, Object> inputs, Map<String, Object> outputs, Object scatter, String scatterMethod,Object when, String id) {
     this.id = id;
     this.app = app;
     this.scatter = scatter;
     this.inputs = inputs;
     this.outputs = outputs;
     this.scatterMethod = scatterMethod;
+    this.when = when;
     processPortDefaults();
   }
   
@@ -170,4 +178,20 @@ public final class CWLJob {
     return "Job [id=" + id + ", app=" + app + ", inputs=" + inputs + ", outputs=" + outputs + ", scatter=" + scatter + ", runtime=" + runtime + "]";
   }
 
+  public Object getWhen() {
+    return when;
+  }
+
+  public boolean resolveWhen() {
+
+    if (when == null) {
+      return true;
+    }
+    try {
+      return CWLExpressionResolver.resolve(when, this, null);
+    } catch (CWLExpressionException e) {
+      e.printStackTrace();
+    }
+    return true;
+  }
 }

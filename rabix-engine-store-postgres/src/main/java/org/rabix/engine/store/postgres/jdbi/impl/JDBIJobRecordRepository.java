@@ -115,6 +115,7 @@ public abstract class JDBIJobRecordRepository extends JobRecordRepository {
             q.bind("is_scattered", jobRecord.isScattered());
             q.bind("is_container", jobRecord.isContainer());
             q.bind("is_scatter_wrapper", jobRecord.isScatterWrapper());
+            q.bind("should_skip", jobRecord.shouldSkip());
             q.bind("global_inputs_count", jobRecord.getNumberOfGlobalInputs());
             q.bind("global_outputs_count", jobRecord.getNumberOfGlobalOutputs());
 
@@ -166,6 +167,7 @@ public abstract class JDBIJobRecordRepository extends JobRecordRepository {
       Boolean isScattered = resultSet.getBoolean("is_scattered");
       Boolean isContainer = resultSet.getBoolean("is_container");
       Boolean isScatterWrapper = resultSet.getBoolean("is_scatter_wrapper");
+      Boolean shouldSkip = resultSet.getBoolean("should_skip");
       Integer globalInputsCount = resultSet.getInt("global_inputs_count");
       Integer globalOutputsCount = resultSet.getInt("global_outputs_count");
       String scatterStrategy = resultSet.getString("scatter_strategy");
@@ -173,7 +175,7 @@ public abstract class JDBIJobRecordRepository extends JobRecordRepository {
       LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
       LocalDateTime modifiedAt = resultSet.getTimestamp("modified_at").toLocalDateTime();
 
-      JobRecord jobRecord = new JobRecord(rootId, id, externalId, parentId, JobRecord.JobState.valueOf(jobState), isContainer, isScattered, externalId.equals(rootId), isBlocking, dagHash, createdAt, modifiedAt);
+      JobRecord jobRecord = new JobRecord(rootId, id, externalId, parentId, JobRecord.JobState.valueOf(jobState), isContainer, isScattered, shouldSkip, externalId.equals(rootId), isBlocking, dagHash, createdAt, modifiedAt);
       jobRecord.setScatterWrapper(isScatterWrapper);
       jobRecord.setNumberOfGlobalInputs(globalInputsCount);
       jobRecord.setNumberOfGlobalOutputs(globalOutputsCount);
