@@ -278,7 +278,7 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
 
     UUID rootId = event.getContextId();
 
-    job.setShouldSkip(resolveShouldFail(job, dagNodeService.get(normalizeId(job.getId()),
+    job.setShouldSkip(resolveShouldSkip(job, dagNodeService.get(normalizeId(job.getId()),
             rootId,
             job.getDagHash())));
 
@@ -398,7 +398,7 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
     }
   }
 
-  private boolean resolveShouldFail(JobRecord job, DAGNode node) throws EventHandlerException {
+  private boolean resolveShouldSkip(JobRecord job, DAGNode node) throws EventHandlerException {
     try {
       Application app = appService.get(node.getAppHash());
 
