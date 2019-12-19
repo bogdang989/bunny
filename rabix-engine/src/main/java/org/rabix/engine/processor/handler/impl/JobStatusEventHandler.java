@@ -153,7 +153,7 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
     case COMPLETED:
       updateJobStats(jobRecord, jobStatsRecord);
 
-      if ((!jobRecord.isScatterWrapper() || jobRecord.isRoot()) && !jobRecord.isContainer()) {
+      if ((!jobRecord.isScatterWrapper() || jobRecord.isRoot()) && !jobRecord.isContainer() && !jobRecord.shouldSkip()) {
         for (PortCounter portCounter : jobRecord.getOutputCounters()) {
           Object output = event.getResult().get(portCounter.getPort());
           eventProcessor.send(new OutputUpdateEvent(jobRecord.getRootId(), jobRecord.getId(), portCounter.getPort(), output,
@@ -287,7 +287,9 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
       List<VariableRecord> outputVariableRecords = variableRecordService.find(job.getId(), LinkPortType.OUTPUT, job.getRootId());
       Map<String, Object> outputs = new HashMap<>();
       for (VariableRecord outputVariableRecord : outputVariableRecords) {
-        eventProcessor.addToQueue(new OutputUpdateEvent(job.getRootId(), job.getId(), outputVariableRecord.getPortId(), null, 1, 1, event.getEventGroupId(), event.getProducedByNode()));
+        eventProcessor.addToQueue(new OutputUpdateEvent(job.getRootId(), job.getId(),
+                outputVariableRecord.getPortId(), "null", job.getNumberOfGlobalOutputs(),
+                1, event.getEventGroupId(), event.getProducedByNode()));
         outputs.put(outputVariableRecord.getPortId(), null);
       }
       job.setContainer(false);
