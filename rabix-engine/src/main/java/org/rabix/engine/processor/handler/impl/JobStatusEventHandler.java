@@ -288,7 +288,7 @@ public class JobStatusEventHandler implements EventHandler<JobStatusEvent> {
       Map<String, Object> outputs = new HashMap<>();
       for (VariableRecord outputVariableRecord : outputVariableRecords) {
         eventProcessor.addToQueue(new OutputUpdateEvent(job.getRootId(), job.getId(),
-                outputVariableRecord.getPortId(), "null", job.getNumberOfGlobalOutputs(),
+                outputVariableRecord.getPortId(), null, job.getNumberOfGlobalOutputs(),
                 1, event.getEventGroupId(), event.getProducedByNode()));
         outputs.put(outputVariableRecord.getPortId(), null);
       }
